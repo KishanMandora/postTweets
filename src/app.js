@@ -1,33 +1,14 @@
-const tweetBtn = document.getElementById("tweetBtn");
 const postModal = document.getElementById("postModal");
-const closePostModal = document.getElementById("closePostModal");
 const tweetTextArea = document.getElementById("tweetTextArea");
 const tweetLength = document.getElementById("tweetLength");
 const modalTweetPost = document.getElementById("modalTweetPost");
-const tweetText = document.getElementById("tweetText");
-const tweetPost = document.getElementById("tweetPost");
-const copyBtn = document.getElementById("copyBtn");
 const toast = document.getElementById("toast");
+const responseDiv = document.getElementById("responseDiv");
 
 const tweetLengthLimit = 280;
+const POST_URL = "https://one00x-data-analysis.onrender.com/posts";
 
-tweetBtn.addEventListener("click", () => {
-  postModal.showModal();
-});
-
-closePostModal.addEventListener("click", () => {
-  postModal.close();
-});
-
-tweetPost.addEventListener("click", () => {
-  console.log(tweetText.value);
-  tweetTextArea.innerText = tweetText.value;
-  tweetLength.innerText = tweetText.value.length;
-  tweetLength.classList.add(
-    tweetText.value.length >= tweetLengthLimit
-      ? "text-error"
-      : "text-neutral-500",
-  );
+document.addEventListener("DOMContentLoaded", () => {
   postModal.showModal();
 });
 
@@ -55,29 +36,33 @@ tweetTextArea.addEventListener("keyup", () => {
   }
 });
 
-tweetText.addEventListener("keyup", () => {
-  if (
-    tweetText.value.length >= tweetLengthLimit ||
-    tweetText.value.length < 1
-  ) {
-    tweetPost.disabled = true;
-    tweetPost.classList.add("bg-primary-200");
-    tweetPost.classList.add("cursor-not-allowed");
-    tweetPost.classList.remove("bg-primary-100");
-  } else {
-    tweetPost.disabled = false;
-    tweetPost.classList.remove("bg-primary-200");
-    tweetPost.classList.remove("cursor-not-allowed");
-    tweetPost.classList.add("bg-primary-100");
+// MAIN FUNCTION TO POST THE TWEET
+modalTweetPost.addEventListener("click", async () => {
+  try {
+    const tweetText = tweetTextArea.value;
+    const resp = await fetch(POST_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        post: {
+          content: tweetText,
+        },
+      }),
+    });
+
+    if (!resp.ok) {
+      throw Error("Tweet posting failed");
+    }
+
+    const data = await resp.json();
+    responseDiv.classList.add("text-success");
+    responseDiv.classList.remove("text-error");
+    responseDiv.innerText = `Tweet posted successfully! Tweet ID: ${data.id}`;
+  } catch (err) {
+    responseDiv.classList.add("text-error");
+    responseDiv.classList.remove("text-success");
+    responseDiv.innerText = `Error: ${err.message}`;
   }
-});
-
-copyBtn.addEventListener("click", () => {
-  toast.classList.remove("hidden");
-  toast.classList.add("block");
-
-  setTimeout(() => {
-    toast.classList.add("hidden");
-    toast.classList.remove("block");
-  }, 3000);
 });

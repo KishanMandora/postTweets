@@ -956,6 +956,11 @@ video {
   font-weight: 400;
 }
 
+.text-error {
+  --tw-text-opacity: 1;
+  color: rgb(139 20 26 / var(--tw-text-opacity));
+}
+
 .text-neutral-400 {
   --tw-text-opacity: 1;
   color: rgb(162 162 162 / var(--tw-text-opacity));
@@ -971,9 +976,9 @@ video {
   color: rgb(115 115 115 / var(--tw-text-opacity));
 }
 
-.text-error {
+.text-success {
   --tw-text-opacity: 1;
-  color: rgb(139 20 26 / var(--tw-text-opacity));
+  color: rgb(0 190 116 / var(--tw-text-opacity));
 }
 
 .placeholder-neutral-500::-moz-placeholder {
